@@ -27,7 +27,9 @@ The following example adds a set of users to all projects of another user. We us
 
 == Install
 
-  gem install gittycent
+Something is up with authentication on rubygems.org, so no gem for now, deal with it!
+
+  gem install gittycent # BORKED!
   
 Homepage:: http://github.com/fastestforward/gittycent
 Copyright:: Copyright (c) 2008 Elijah Miller <mailto:elijah.miller@gmail.com>, released under the MIT license.
