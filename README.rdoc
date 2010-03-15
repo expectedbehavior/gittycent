@@ -1,6 +1,6 @@
 = GittyCent
 
-Up in the Hub.
+A GitHub wrapper in Ruby.
 
 == Examples
 

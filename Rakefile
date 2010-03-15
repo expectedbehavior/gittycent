@@ -2,7 +2,7 @@ require 'spec/rake/spectask'
 
 require 'echoe'
 Echoe.new 'gittycent' do |p|
-  p.description     = "Up in the Hub."
+  p.description     = "A GitHub wrapper in Ruby."
   p.url             = "http://github.com/fastestforward/gittycent"
   p.author          = "Elijah Miller"
   p.email           = "elijah.miller@gmail.com"
