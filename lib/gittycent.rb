@@ -19,9 +19,9 @@ class GitHub
     end
   end
   
-  def self.connect_with_git_config(section = :github, &block)
+  def self.connect_with_git_config(section = :github, options = {}, &block)
     config = Hash[*`git config -l`.scan(/^(.*?)=(.*)$/).flatten]
-    connect(:login => config["#{section}.user"], :token => config["#{section}.token"], &block)
+    connect(options.merge(:login => config["#{section}.user"], :token => config["#{section}.token"]), &block)
   end
   
   def initialize(options)
