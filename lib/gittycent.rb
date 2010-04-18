@@ -252,6 +252,10 @@ class GitHub
       get("/repos/show/#{owner.login}/#{name}/languages")['languages']
     end
     
+    def load
+      @attributes = get("/repos/show/#{owner.login}/#{name}")['repository'].symbolize_keys
+    end
+    
     def tags
       get("/repos/show/#{owner.login}/#{name}/tags")['tags']
     end
