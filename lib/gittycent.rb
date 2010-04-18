@@ -248,7 +248,7 @@ class GitHub
     self.identified_by = :name
 
     loadable_attributes :owner, :open_issues, :description, :fork, :forks, 
-      :private, :url, :homepage, :watchers
+      :private, :url, :homepage, :watchers, :has_wiki, :has_downloads, :has_issues
 
     def to_s
       name.to_s
