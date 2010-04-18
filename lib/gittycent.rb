@@ -230,8 +230,8 @@ class GitHub
       
     # Returns a list of all repos this user is watching.
     def watched_repos
+      super
     end
-    
     
     # Adds a new repository for this user. Supported options include: :name, 
     # :description, :homepage, :public.
