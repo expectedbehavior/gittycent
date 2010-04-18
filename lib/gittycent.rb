@@ -205,15 +205,6 @@ class GitHub
       @repos ||= get("/repos/watched/#{login}")['repositories'].map { |r| Repo.new(connection, r) }
     end
     
-    # Adds a new repository for this user. Supported options include: :name, 
-    # :description, :homepage, :public.
-    #
-    #  repo = user.create_repo(:name => 'hello', :public => false)
-    def create_repo(options)
-      options = options.dup
-      Repo.new(connection, post("/repos/create", options)['repository'])
-    end
-    
     # Loads lazily-fetched attributes.
     def load
       @attributes = get("/user/show/#{login}")['user'].symbolize_keys
@@ -239,6 +230,16 @@ class GitHub
       
     # Returns a list of all repos this user is watching.
     def watched_repos
+    end
+    
+    
+    # Adds a new repository for this user. Supported options include: :name, 
+    # :description, :homepage, :public.
+    #
+    #  repo = user.create_repo(:name => 'hello', :public => false)
+    def create_repo(options)
+      options = options.dup
+      Repo.new(connection, post("/repos/create", options)['repository'])
     end
   end
   
