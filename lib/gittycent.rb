@@ -147,7 +147,7 @@ class GitHub
     def self.loadable_attributes(*attributes)
       (attributes - [identified_by]).each do |attribute|
         define_method(attribute) do
-          if !@attributes.include?(attributes)
+          if !@attributes.include?(attribute)
             load
           end
           @attributes[attribute]
