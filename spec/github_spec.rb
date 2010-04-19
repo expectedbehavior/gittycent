@@ -3,10 +3,43 @@ require 'spec_helper'
 describe "GitHub" do
   before(:each) do
     @gh = GitHub.connect(:login => 'login', :token => 'token', :verbosity => GitHub::NONE)
-    @owner = @gh.authenticated_user
+  end
+  
+  it "should return the authenticated user" do
+    @gh.authenticated_user.should be_an_instance_of(GitHub::AuthenticatedUser)
+    @gh.authenticated_user.login.should == 'login'
+  end
+  
+  it "should be able to find the authenticated user by login" do
+    @gh.user('login').should be_an_instance_of(GitHub::AuthenticatedUser)
+    @gh.user('login').login.should == 'login'
   end
   
   describe "User" do
+    before(:each) do
+      @owner = @gh.authenticated_user
+    end
+    
+    describe "following" do
+      before(:each) do
+        response = "
+          ---
+          users: 
+          - netshade
+          - kristopher
+          - sephonicus
+        "
+        FakeWeb.register_uri(:get, %r{http://github.com/api/v2/yaml/user/show/login/following?.*}, 
+          :content_type => 'text/yaml',
+          :body => response
+        )
+      end
+      
+      it "should list followings" do
+        @owner.following.map(&:login).should include('netshade', 'kristopher', 'sephonicus')
+      end
+    end
+
     describe "followers" do
       before(:each) do
         response = "
