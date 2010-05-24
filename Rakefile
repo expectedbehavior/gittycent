@@ -12,10 +12,4 @@ Echoe.new 'gittycent' do |p|
   ]
 end
 
-desc 'Default: run specs'
-task :default => :spec
-Spec::Rake::SpecTask.new do |t|
-  t.spec_files = FileList["spec/**/*_spec.rb"]
-end
-
 task :test => :spec
