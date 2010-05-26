@@ -202,6 +202,10 @@ class GitHub
       @repos ||= get("/repos/show/#{login}")['repositories'].map { |r| Repo.new(connection, r) }
     end
     
+    def repo(name)
+      repos.detect { |r| r.name == name }
+    end
+    
     # Returns a list of all public repos thi user is watching.
     def watched_repos
       @repos ||= get("/repos/watched/#{login}")['repositories'].map { |r| Repo.new(connection, r) }
