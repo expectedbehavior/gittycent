@@ -316,5 +316,78 @@ class GitHub
     def branches
       get("/repos/show/#{owner.login}/#{name}/branches")['branches']
     end
+    
+    # Returns all commits of the master branch.
+    def commits
+      get("/commits/list/#{owner.login}/#{name}/master")['commits'].map { |c| Commit.new(connection, c.merge(:repo => self)) }
+    end
+  end
+  
+  
+  class Commit < Connectable
+    attr_accessor :id
+    self.identified_by = :id
+
+    loadable_attributes :author, :parents, :url, :committed_date, :authored_date, :message, :comitter, :tree
+
+    def to_s
+      id.to_s
+    end
+    
+    # Returns the associated repository.
+    def repo
+      @attributes[:repo]
+    end
+    
+    # Returns the parent commits of this commit.
+    def parents
+      @parents ||= @attributes[:parents].map { |p| Commit.new(connection, p.merge(:repo => repo)) }
+    end
+    
+    # Returns the name that authored this commit.
+    def author_name
+      load unless @attributes.include?(:author)
+      @attributes[:author]['name']
+    end
+    
+    # Returns the email address that authored this commit.
+    def author_email
+      load unless @attributes.include?(:author)
+      @attributes[:author]['email']
+    end
+    
+    # Returns the GitHub user that authored this commit.
+    def author_user
+      load unless @attributes.include?(:author)
+      if login = @attributes[:author]["login"]
+        @author_user ||= connection.user(login)
+      end
+    end
+
+    # Returns the name that commited this commit.
+    def committer_name
+      load unless @attributes.include?(:committer)
+      @attributes[:committer]['name']
+    end
+    
+    # Returns the email address that commited this commit.
+    def committer_email
+      load unless @attributes.include?(:committer)
+      @attributes[:committer]['email']
+    end
+    
+    # Returns the GitHub user that committed this commit.
+    def committer_user
+      load unless @attributes.include?(:committer)
+      if login = @attributes[:committer]["login"]
+        @committer_user ||= connection.user(login)
+      end
+    end
+
+    # Loads lazily-fetched attributes.
+    def load
+      @attributes = get("/commits/show/#{repo.owner.login}/#{repo.name}/#{id}")['commit'].symbolize_keys
+    end
+    
   end
 end
