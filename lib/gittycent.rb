@@ -143,7 +143,7 @@ class GitHub
   
   class Connectable
     class_inheritable_accessor :identified_by
-    attr_accessor :connection, :name
+    attr_accessor :connection, :attributes
     
     def initialize(connection, options)
       self.connection = connection
