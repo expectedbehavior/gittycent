@@ -328,7 +328,7 @@ class GitHub
     attr_accessor :id
     self.identified_by = :id
 
-    loadable_attributes :author, :parents, :url, :committed_date, :authored_date, :message, :comitter, :tree
+    loadable_attributes :author, :parents, :url, :committed_date, :authored_date, :message, :committer, :tree
 
     def to_s
       id.to_s
