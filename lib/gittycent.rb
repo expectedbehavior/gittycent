@@ -147,7 +147,7 @@ class GitHub
     
     def initialize(connection, options)
       self.connection = connection
-      @attributes = options.dup
+      @attributes = options.symbolize_keys
       if self.class.identified_by && @attributes.include?(self.class.identified_by)
         send("#{identified_by}=", @attributes.delete(self.class.identified_by))
       end
