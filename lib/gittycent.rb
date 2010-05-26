@@ -345,50 +345,30 @@ class GitHub
       @parents ||= @attributes[:parents].map { |p| Commit.new(connection, p.merge(:repo => repo)) }
     end
     
-    # Returns the name that authored this commit.
-    def author_name
-      load unless @attributes.include?(:author)
-      @attributes[:author]['name']
-    end
-    
-    # Returns the email address that authored this commit.
-    def author_email
-      load unless @attributes.include?(:author)
-      @attributes[:author]['email']
-    end
-    
-    # Returns the GitHub user that authored this commit.
-    def author_user
-      load unless @attributes.include?(:author)
-      if login = @attributes[:author]["login"]
-        @author_user ||= connection.user(login)
-      end
+    # Returns the Person who authored this commit.
+    def author
+      @author ||= Person.new(connection, @attributes[:author])
     end
 
-    # Returns the name that commited this commit.
-    def committer_name
-      load unless @attributes.include?(:committer)
-      @attributes[:committer]['name']
+    # Returns the Person who committed this commit.
+    def committer
+      @committer ||= Person.new(connection, @attributes[:committer])
     end
     
-    # Returns the email address that commited this commit.
-    def committer_email
-      load unless @attributes.include?(:committer)
-      @attributes[:committer]['email']
-    end
-    
-    # Returns the GitHub user that committed this commit.
-    def committer_user
-      load unless @attributes.include?(:committer)
-      if login = @attributes[:committer]["login"]
-        @committer_user ||= connection.user(login)
-      end
-    end
-
     # Loads lazily-fetched attributes.
     def load
       @attributes = get("/commits/show/#{repo.owner.login}/#{repo.name}/#{id}")['commit'].symbolize_keys
     end
     
+  end
+  
+  class Person < Connectable
+    loadable_attributes :name, :email, :login
+
+    def user
+      if login
+        connection.user(login)
+      end
+    end
   end
 end
