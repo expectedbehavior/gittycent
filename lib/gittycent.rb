@@ -188,8 +188,10 @@ class GitHub
     attr_accessor :login
     self.identified_by = :login
     
-    loadable_attributes :created_at, :gravatar_id, :public_repo_count, 
-      :public_gist_count, :following_count, :followers_count
+
+    loadable_attributes :followers_count, :created_at, :company, :gravatar_id, 
+       :public_repo_count, :location, :email, :public_gist_count, :blog, 
+       :name, :following_count
     
     def to_s
       login.to_s
@@ -222,11 +224,8 @@ class GitHub
   end
   
   class AuthenticatedUser < User
-    loadable_attributes :followers_count, :owned_private_repo_count, 
-      :created_at, :company, :private_gist_count, :plan, :gravatar_id, 
-      :total_private_repo_count, :public_repo_count, :location, :email, 
-      :collaborators, :public_gist_count, :blog, :name, :following_count, 
-      :disk_usage
+    loadable_attributes :owned_private_repo_count, :created_at,
+      :private_gist_count, :plan, :collaborators, :disk_usage
       
     # Returns a list of all repos this user is watching.
     def watched_repos
