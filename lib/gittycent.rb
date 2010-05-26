@@ -341,6 +341,7 @@ class GitHub
     
     # Returns the parent commits of this commit.
     def parents
+      load unless @attributes.include?(:parents)
       @parents ||= @attributes[:parents].map { |p| Commit.new(connection, p.merge(:repo => repo)) }
     end
     
