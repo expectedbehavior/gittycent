@@ -357,7 +357,7 @@ class GitHub
     
     # Loads lazily-fetched attributes.
     def load
-      @attributes = get("/commits/show/#{repo.owner.login}/#{repo.name}/#{id}")['commit'].symbolize_keys
+      @attributes = get("/commits/show/#{repo.owner.login}/#{repo.name}/#{id}")['commit'].symbolize_keys.merge(:repo => repo)
     end
     
   end
