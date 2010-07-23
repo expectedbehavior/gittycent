@@ -1,3 +1,9 @@
+== 0.1.0
+
+* Replacing echoe with Tumbler. (Elijah Miller, 9a9c6d4)
+* Version 0.1.0 (Elijah Miller, 3dd6b64)
+* Being a good Ruby citizen, class is now Gittycent. Also whitespace :) (Elijah Miller, 034aa30)
+
 v0.1.0. Changed class name to Gittycent.
 
 v0.0.4. Documentation, better support for repos, minor bug fixes and basic specs.
