@@ -1,0 +1,6 @@
+gem_name "gittycent"
+
+use_color true
+
+version_file 'lib/gittycent/version.rb'
+changelog_file "CHANGELOG"

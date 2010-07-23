@@ -1,6 +1,7 @@
 require 'active_support'
 require 'active_support/all'
 require 'httparty'
+require 'gittycent/version'
 require 'pp'
 
 class GitHub
