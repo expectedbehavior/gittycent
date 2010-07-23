@@ -3,17 +3,17 @@ require 'active_support/all'
 require 'httparty'
 require 'pp'
 
-class GitHub
+class Gittycent
   API_VERSION = 'v2'
   FORMAT = 'yaml'
   NONE, WARNING, INFO, DEBUG = *1..10
-  
+
   attr_accessor :options
-  
+
   # Connects to GitHub using login/token. Yields or returns the new 
   # connection.
   #
-  #  GitHub.connect(:login => 'jqr', :token => 'somesecretstuff123')
+  #  Gittycent.connect(:login => 'jqr', :token => 'somesecretstuff123')
   def self.connect(options)
     connection = new(options)
     if block_given?
@@ -22,34 +22,34 @@ class GitHub
       connection
     end
   end
-  
+
   # Simplified method for connecting with git config specified credentials.
   # Also allows for using an alternate section for easy handling of multiple
   # credentials. Just like connect this yields or returns the new connection.
   #
-  #  github = GitHub.connect_with_git_config
+  #  gittycent = Gittycent.connect_with_git_config
   def self.connect_with_git_config(section = :github, options = {}, &block)
     config = Hash[*`git config -l`.scan(/^(.*?)=(.*)$/).flatten]
     connect(options.merge(:login => config["#{section}.user"], :token => config["#{section}.token"]), &block)
   end
-  
-  # Returns a new GitHub connection object, requires :login and :token 
+
+  # Returns a new Gittycent connection object, requires :login and :token 
   # options.
   #
-  #  github = GitHub.new(:login => 'jqr', :token => 'somesecretstuff123')
+  #  gittycent = Gittycent.new(:login => 'jqr', :token => 'somesecretstuff123')
   def initialize(options)
     self.options = options
     debug "Login using login #{options[:login]} with token #{options[:token]}"
   end
-  
+
   # Returns the verbosity level.
   def verbosity
     options[:verbosity] || NONE
   end
-  
+
   # Finds a GitHub user by login.
   #
-  #  user = github.user('jqr')
+  #  user = gittycent.user('jqr')
   def user(login)
     if login == options[:login]
       AuthenticatedUser.new(self, :login => options[:login])
@@ -57,7 +57,7 @@ class GitHub
       User.new(self, :login => login)
     end
   end
-  
+
   # Finds GitHub users by a query string.
   def user_search(query)
     get("/user/search/#{query}")['users'].map { |u| User.new(self, u) }
@@ -67,11 +67,11 @@ class GitHub
   def authenticated_user
     @authenticated_user ||= user(options[:login])
   end
-  
+
   def inspect # :nodoc:
     "#<#{self.class}#{' ' + options[:login] if options[:login].present?}>"
   end
-  
+
   def default_http_options
     { 
       :query => {
@@ -80,7 +80,7 @@ class GitHub
       }
     }
   end
-  
+
   # Performs a GET request on path, automatically prepending api version and 
   # format paramters. Will automatically retry if the request rate limiting is 
   # hit.
@@ -95,7 +95,7 @@ class GitHub
       response
     end
   end
-  
+
   # Performs a POST request on path, automatically prepending api version and 
   # format paramters. Will automatically retry if the request rate limiting is 
   # hit.
@@ -111,19 +111,19 @@ class GitHub
       response
     end
   end
-  
+
   def debug(message = "")
     puts message if verbosity >= DEBUG
   end
-  
+
   def warn(message = "")
     puts message if verbosity >= WARNING
   end
-  
+
   def debug_inspect(object)
     debug object.pretty_inspect
   end
-  
+
   # Automatically retries a block of code if the returned value is rate 
   # limited (HTTP Code 403) by GitHub.
   def with_retry
@@ -140,11 +140,11 @@ class GitHub
       end
     end
   end
-  
+
   class Connectable
     class_inheritable_accessor :identified_by
     attr_accessor :connection, :attributes
-    
+  
     def initialize(connection, options)
       self.connection = connection
       @attributes = options.symbolize_keys
@@ -153,24 +153,24 @@ class GitHub
       end
       self.connection = connection
     end
-    
+  
     def get(*args)
       connection.get(*args)
     end
-    
+  
     def post(*args)
       connection.post(*args)
     end
-    
+  
     def debug(*args)
       connection.debug(*args)
     end
-    
+  
     def reload
       @attributes = {}
       load
     end
-    
+  
     def self.loadable_attributes(*attributes)
       (attributes - [identified_by]).each do |attribute|
         define_method(attribute) do
@@ -181,41 +181,41 @@ class GitHub
         end
       end
     end
-    
-  end
   
+  end
+
   class User < Connectable
     attr_accessor :login
     self.identified_by = :login
-    
+  
 
     loadable_attributes :followers_count, :created_at, :company, :gravatar_id, 
        :public_repo_count, :location, :email, :public_gist_count, :blog, 
        :name, :following_count
-    
+  
     def to_s
       login.to_s
     end
-    
+  
     # Returns this user's repositories.
     def repos
       @repos ||= get("/repos/show/#{login}")['repositories'].map { |r| Repo.new(connection, r) }
     end
-    
+  
     def repo(name)
       repos.detect { |r| r.name == name }
     end
-    
+  
     # Returns a list of all public repos thi user is watching.
     def watched_repos
       @repos ||= get("/repos/watched/#{login}")['repositories'].map { |r| Repo.new(connection, r) }
     end
-    
+  
     # Loads lazily-fetched attributes.
     def load
       @attributes = get("/user/show/#{login}")['user'].symbolize_keys
     end
-    
+  
     # Returns all the users that follow this user.
     def followers
       @followers ||= get("/user/show/#{login}/followers")['users'].map { |u| User.new(connection, :login => u) }
@@ -226,16 +226,16 @@ class GitHub
       @following||= get("/user/show/#{login}/following")['users'].map { |u| User.new(connection, :login => u) }
     end
   end
-  
+
   class AuthenticatedUser < User
     loadable_attributes :owned_private_repo_count, :created_at,
       :private_gist_count, :plan, :collaborators, :disk_usage
-      
+    
     # Returns a list of all repos this user is watching.
     def watched_repos
       super
     end
-    
+  
     # Adds a new repository for this user. Supported options include: :name, 
     # :description, :homepage, :public.
     #
@@ -245,7 +245,7 @@ class GitHub
       Repo.new(connection, post("/repos/create", options)['repository'])
     end
   end
-  
+
   class Repo < Connectable
     attr_accessor :name
     self.identified_by = :name
@@ -256,17 +256,17 @@ class GitHub
     def to_s
       name.to_s
     end
-    
+  
     # Returns the owner of this repository.
     def owner
       @owner ||= User.new(connection, :login => @attributes[:owner])
     end
-    
+  
     # Returns a list of all collaborators.
     def collaborators
       @collaborators ||= get("/repos/show/#{owner.login}/#{name}/collaborators")['collaborators'] || []
     end
-    
+  
     # Sets the list of collaborators.
     def collaborators=(value)
       value = value.dup.uniq
@@ -282,7 +282,7 @@ class GitHub
       end
       @collaborators = nil
     end
-    
+  
     # Returns the shell commands used to do an initial push of this project to
     # GitHub.
     def initial_push_command
@@ -291,39 +291,39 @@ class GitHub
       "git config --add branch.master.remote origin &&\n" +
       "git config --add branch.master.merge refs/heads/master" 
     end
-    
+  
     # Returns repositories in this repository's network.
     def network
       @network ||= get("/repos/show/#{owner.login}/#{name}/network")['network'].map { |r| Repo.new(connection, r) }
     end
-    
+  
     # Returns the languages detected.
     def languages
       get("/repos/show/#{owner.login}/#{name}/languages")['languages']
     end
-    
+  
     # Loads lazily-fetched attributes.
     def load
       @attributes = get("/repos/show/#{owner.login}/#{name}")['repository'].symbolize_keys
     end
-    
+  
     # Returns all tags of this repository.
     def tags
       get("/repos/show/#{owner.login}/#{name}/tags")['tags']
     end
-    
+  
     # Returns all branches of this repository.
     def branches
       get("/repos/show/#{owner.login}/#{name}/branches")['branches']
     end
-    
+  
     # Returns all commits of the master branch.
     def commits
       get("/commits/list/#{owner.login}/#{name}/master")['commits'].map { |c| Commit.new(connection, c.merge(:repo => self)) }
     end
   end
-  
-  
+
+
   class Commit < Connectable
     attr_accessor :id
     self.identified_by = :id
@@ -333,18 +333,18 @@ class GitHub
     def to_s
       id.to_s
     end
-    
+  
     # Returns the associated repository.
     def repo
       @attributes[:repo]
     end
-    
+  
     # Returns the parent commits of this commit.
     def parents
       load unless @attributes.include?(:parents)
       @parents ||= @attributes[:parents].map { |p| Commit.new(connection, p.merge(:repo => repo)) }
     end
-    
+  
     # Returns the Person who authored this commit.
     def author
       @author ||= Person.new(connection, @attributes[:author])
@@ -354,14 +354,14 @@ class GitHub
     def committer
       @committer ||= Person.new(connection, @attributes[:committer])
     end
-    
+  
     # Loads lazily-fetched attributes.
     def load
       @attributes = get("/commits/show/#{repo.owner.login}/#{repo.name}/#{id}")['commit'].symbolize_keys.merge(:repo => repo)
     end
-    
-  end
   
+  end
+
   class Person < Connectable
     loadable_attributes :name, :email, :login
 
