@@ -1,3 +1,7 @@
+== 0.1.1
+
+* Rakefile runs specs again! (Elijah Miller, c390cf6)
+
 == 0.1.0
 
 * Replacing echoe with Tumbler. (Elijah Miller, 9a9c6d4)
