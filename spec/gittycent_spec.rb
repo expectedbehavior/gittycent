@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-describe "GitHub" do
+describe "Gittycent" do
   before(:each) do
-    @gh = GitHub.connect(:login => 'login', :token => 'token', :verbosity => GitHub::NONE)
+    @gh = Gittycent.connect(:login => 'login', :token => 'token', :verbosity => Gittycent::NONE)
   end
   
   it "should return the authenticated user" do
-    @gh.authenticated_user.should be_an_instance_of(GitHub::AuthenticatedUser)
+    @gh.authenticated_user.should be_an_instance_of(Gittycent::AuthenticatedUser)
     @gh.authenticated_user.login.should == 'login'
   end
   
   it "should be able to find the authenticated user by login" do
-    @gh.user('login').should be_an_instance_of(GitHub::AuthenticatedUser)
+    @gh.user('login').should be_an_instance_of(Gittycent::AuthenticatedUser)
     @gh.user('login').login.should == 'login'
   end
   
