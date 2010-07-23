@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{gittycent}
-  s.version = "0.0.4"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Elijah Miller"]
-  s.date = %q{2010-05-24}
+  s.date = %q{2010-07-22}
   s.description = %q{A GitHub wrapper in Ruby.}
   s.email = %q{elijah.miller@gmail.com}
   s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.rdoc", "lib/gittycent.rb"]
