@@ -3,8 +3,6 @@ require 'active_support/all'
 require 'httparty'
 require 'pp'
 
-require 'gittycent/version'
-
 class Gittycent
   API_VERSION = 'v2'
   FORMAT = 'yaml'
