@@ -329,7 +329,7 @@ class Gittycent
     attr_accessor :name, :head, :repo
     self.identified_by = :name
     
-    # Returns all commits of the master branch.
+    # Returns all commits in this branch, most recent first.
     def commits
       if !@commits
         @commits = []
@@ -344,6 +344,7 @@ class Gittycent
       @commits
     end
     
+    # Returns the associated repository.
     def repo
       @attributes[:repo]
     end
