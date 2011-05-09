@@ -319,7 +319,15 @@ class Gittycent
   
     # Returns all commits of the master branch.
     def commits
-      get("/commits/list/#{owner.login}/#{name}/master")['commits'].map { |c| Commit.new(connection, c.merge(:repo => self)) }
+      list = []
+      x = 0
+      loop do
+        x += 1
+        response = get("/commits/list/#{owner.login}/#{name}/master?page=#{x}")
+        break unless response.code == 200
+        list += response['commits'].map { |c| Commit.new(connection, c.merge(:repo => self)) }
+      end
+      list
     end
   end
 
