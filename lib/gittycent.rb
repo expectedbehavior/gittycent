@@ -225,6 +225,15 @@ class Gittycent
     def following
       @following||= get("/user/show/#{login}/following")['users'].map { |u| User.new(connection, :login => u) }
     end
+    
+    # Retrusns the url for viewing this user on the web.
+    def url
+      "http://github.com/#{login}"
+    end
+    
+    def inspect # :nodoc:
+      "#<#{self.class} #{login}>"
+    end
   end
 
   class AuthenticatedUser < User
@@ -348,6 +357,15 @@ class Gittycent
     def repo
       @attributes[:repo]
     end
+    
+    # Retrusns the url for viewing this branch on the web.
+    def url
+      "http://github.com/#{repo.owner.login}/#{repo.name}/#{name}"
+    end
+    
+    def inspect # :nodoc:
+      "#<#{self.class} #{url}>"
+    end
   end
 
   class Commit < Connectable
@@ -386,6 +404,14 @@ class Gittycent
       @attributes = get("/commits/show/#{repo.owner.login}/#{repo.name}/#{id}")['commit'].symbolize_keys.merge(:repo => repo)
     end
   
+    # Retrusns the url for viewing this commit on the web.
+    def url
+      "http://github.com/#{repo.owner.login}/#{id}"
+    end
+    
+    def inspect # :nodoc:
+      "#<#{self.class} #{url}>"
+    end
   end
 
   class Person < Connectable
