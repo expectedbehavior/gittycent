@@ -314,23 +314,38 @@ class Gittycent
   
     # Returns all branches of this repository.
     def branches
-      get("/repos/show/#{owner.login}/#{name}/branches")['branches']
+      @branches ||= get("/repos/show/#{owner.login}/#{name}/branches")['branches'].map do |name, head|
+        Branch.new(connection, 
+          :name => name,
+          :head => head,
+          :repo => self
+        )
+      end
     end
   
+  end
+
+  class Branch < Connectable
+    attr_accessor :name, :head, :repo
+    self.identified_by = :name
+    
     # Returns all commits of the master branch.
     def commits
       list = []
       x = 0
       loop do
         x += 1
-        response = get("/commits/list/#{owner.login}/#{name}/master?page=#{x}")
+        response = get("/commits/list/#{repo.owner.login}/#{repo.name}/#{name}?page=#{x}")
         break unless response.code == 200
         list += response['commits'].map { |c| Commit.new(connection, c.merge(:repo => self)) }
       end
       list
     end
+    
+    def repo
+      @attributes[:repo]
+    end
   end
-
 
   class Commit < Connectable
     attr_accessor :id
