@@ -203,7 +203,7 @@ class Gittycent
     end
   
     def repo(name)
-      repos.detect { |r| r.name == name }
+      Repo.new(connection, :name => name, :owner => self)
     end
   
     # Returns a list of all public repos thi user is watching.
