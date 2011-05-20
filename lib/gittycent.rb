@@ -316,6 +316,11 @@ class Gittycent
       @attributes = get("/repos/show/#{owner.login}/#{name}")['repository'].symbolize_keys
     end
   
+    # Returns a single commit
+    def commit(id)
+      Commit.new(connection, { :id => id, :repo => self })
+    end
+  
     # Returns all tags of this repository.
     def tags
       get("/repos/show/#{owner.login}/#{name}/tags")['tags']
