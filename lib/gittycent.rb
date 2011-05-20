@@ -372,7 +372,7 @@ class Gittycent
     attr_accessor :id
     self.identified_by = :id
 
-    loadable_attributes :author, :parents, :url, :committed_date, :authored_date, :message, :committer, :tree
+    loadable_attributes :author, :parents, :committed_date, :authored_date, :message, :committer, :tree
 
     def to_s
       id.to_s
@@ -399,16 +399,15 @@ class Gittycent
       @committer ||= Person.new(connection, @attributes[:committer])
     end
   
+    def url
+      "http://github.com/#{repo.owner.login}/#{repo.name}/commit/#{id}"
+    end
+    
     # Loads lazily-fetched attributes.
     def load
       @attributes = get("/commits/show/#{repo.owner.login}/#{repo.name}/#{id}")['commit'].symbolize_keys.merge(:repo => repo)
     end
   
-    # Retrusns the url for viewing this commit on the web.
-    def url
-      "http://github.com/#{repo.owner.login}/#{id}"
-    end
-    
     def inspect # :nodoc:
       "#<#{self.class} #{url}>"
     end
