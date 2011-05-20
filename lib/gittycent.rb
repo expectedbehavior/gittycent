@@ -377,7 +377,7 @@ class Gittycent
     attr_accessor :id
     self.identified_by = :id
 
-    loadable_attributes :author, :parents, :committed_date, :authored_date, :message, :committer, :tree
+    loadable_attributes :author, :parents, :committed_date, :authored_date, :message, :committer, :tree, :modified
 
     def to_s
       id.to_s
@@ -403,6 +403,10 @@ class Gittycent
     def committer
       @committer ||= Person.new(connection, @attributes[:committer])
     end
+    
+    def modifications
+      @modifications ||= modified.map { |m| Modification.new(connection, self, m) }
+    end
   
     def url
       "http://github.com/#{repo.owner.login}/#{repo.name}/commit/#{id}"
@@ -415,6 +419,17 @@ class Gittycent
   
     def inspect # :nodoc:
       "#<#{self.class} #{url}>"
+    end
+  end
+  
+  class Modification
+    attr_accessor :connection, :commit, :filename, :diff
+    
+    def initialize(connection, commit, attributes)
+      @connection = connection
+      @commit = commit
+      @filename = attributes['filename']
+      @diff = attributes['diff']
     end
   end
 
