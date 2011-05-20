@@ -323,7 +323,7 @@ class Gittycent
   
     # Returns all tags of this repository.
     def tags
-      get("/repos/show/#{owner.login}/#{name}/tags")['tags']
+      @tags ||= get("/repos/show/#{owner.login}/#{name}/tags")['tags']
     end
   
     # Returns all branches of this repository.
