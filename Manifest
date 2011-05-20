@@ -5,3 +5,6 @@ README.rdoc
 Rakefile
 gittycent.gemspec
 lib/gittycent.rb
+lib/gittycent/version.rb
+spec/gittycent_spec.rb
+spec/spec_helper.rb
