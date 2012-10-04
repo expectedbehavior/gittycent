@@ -1,3 +1,7 @@
+WARNING: This project is no longer maintained and it uses an older version of the GitHub API that no longer exists.
+
+For easy access to the GitHub API using Ruby, check out Ghee[https://github.com/jonmagic/ghee].
+
 = GittyCent
 
 A GitHub wrapper in Ruby.
@@ -28,6 +32,6 @@ The following example adds a set of users to all projects of another user. We us
 == Install
 
   gem install gittycent
-  
+
 Homepage:: http://github.com/fastestforward/gittycent
 Copyright:: Copyright (c) 2008 Elijah Miller <mailto:elijah.miller@gmail.com>, released under the MIT license.
